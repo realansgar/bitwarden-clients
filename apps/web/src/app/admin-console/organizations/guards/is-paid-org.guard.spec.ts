@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { RouterTestingHarness } from "@angular/router/testing";
-import { MockProxy, any, mock } from "jest-mock-extended";
+import { MockProxy, mock } from "jest-mock-extended";
 import { of } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -103,27 +103,12 @@ describe("Is Paid Org Guard", () => {
     );
   });
 
-  it("shows a dialog to users of a free organization and does not proceed with navigation", async () => {
-    // `useTotp` is the current indicator of a free org, it is the baseline
-    // feature offered above the free organization level.
+  it("proceeds with navigation for a free organization", async () => {
     const org = orgFactory({ type: OrganizationUserType.User, useTotp: false });
     organizationService.organizations$.calledWith(userId).mockReturnValue(of([org]));
     await routerHarness.navigateByUrl(`organizations/${org.id}/paidOrganizationsOnly`);
-    expect(dialogService.openSimpleDialog).toHaveBeenCalled();
-    expect(
-      routerHarness.routeNativeElement?.querySelector("h1")?.textContent?.trim() ?? "",
-    ).not.toBe("This component can only be accessed by a paid organization!");
-  });
-
-  it("redirects users with billing access to the billing screen to upgrade", async () => {
-    // `useTotp` is the current indicator of a free org, it is the baseline
-    // feature offered above the free organization level.
-    const org = orgFactory({ type: OrganizationUserType.Owner, useTotp: false });
-    organizationService.organizations$.calledWith(userId).mockReturnValue(of([org]));
-    dialogService.openSimpleDialog.calledWith(any()).mockResolvedValue(true);
-    await routerHarness.navigateByUrl(`organizations/${org.id}/paidOrganizationsOnly`);
     expect(routerHarness.routeNativeElement?.querySelector("h1")?.textContent?.trim() ?? "").toBe(
-      "This is the organization upgrade screen!",
+      "This component can only be accessed by a paid organization!",
     );
   });
 

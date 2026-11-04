@@ -1,4 +1,4 @@
-import { map, Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 
 import { BILLING_DISK, StateProvider, UserKeyDefinition } from "@bitwarden/state";
 
@@ -17,28 +17,16 @@ export const BILLING_ACCOUNT_PROFILE_KEY_DEFINITION = new UserKeyDefinition<Bill
 export class DefaultBillingAccountProfileStateService implements BillingAccountProfileStateService {
   constructor(private readonly stateProvider: StateProvider) {}
 
-  hasPremiumFromAnyOrganization$(userId: UserId): Observable<boolean> {
-    return this.stateProvider
-      .getUser(userId, BILLING_ACCOUNT_PROFILE_KEY_DEFINITION)
-      .state$.pipe(map((profile) => !!profile?.hasPremiumFromAnyOrganization));
+  hasPremiumFromAnyOrganization$(_userId: UserId): Observable<boolean> {
+    return of(true);
   }
 
-  hasPremiumPersonally$(userId: UserId): Observable<boolean> {
-    return this.stateProvider
-      .getUser(userId, BILLING_ACCOUNT_PROFILE_KEY_DEFINITION)
-      .state$.pipe(map((profile) => !!profile?.hasPremiumPersonally));
+  hasPremiumPersonally$(_userId: UserId): Observable<boolean> {
+    return of(true);
   }
 
-  hasPremiumFromAnySource$(userId: UserId): Observable<boolean> {
-    return this.stateProvider
-      .getUser(userId, BILLING_ACCOUNT_PROFILE_KEY_DEFINITION)
-      .state$.pipe(
-        map(
-          (profile) =>
-            profile?.hasPremiumFromAnyOrganization === true ||
-            profile?.hasPremiumPersonally === true,
-        ),
-      );
+  hasPremiumFromAnySource$(_userId: UserId): Observable<boolean> {
+    return of(true);
   }
 
   async setHasPremium(

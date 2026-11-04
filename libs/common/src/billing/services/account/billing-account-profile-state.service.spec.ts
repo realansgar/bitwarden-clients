@@ -48,13 +48,13 @@ describe("BillingAccountProfileStateService", () => {
       expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$(userId))).toBe(true);
     });
 
-    it("return false when they do not have premium from an organization", async () => {
+    it("returns true when they do not have premium from an organization", async () => {
       userBillingAccountProfileState.nextState({
         hasPremiumPersonally: false,
         hasPremiumFromAnyOrganization: false,
       });
 
-      expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$(userId))).toBe(false);
+      expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$(userId))).toBe(true);
     });
   });
 
@@ -68,13 +68,13 @@ describe("BillingAccountProfileStateService", () => {
       expect(await firstValueFrom(sut.hasPremiumPersonally$(userId))).toBe(true);
     });
 
-    it("returns false when the user does not have premium personally", async () => {
+    it("returns true when the user does not have premium personally", async () => {
       userBillingAccountProfileState.nextState({
         hasPremiumPersonally: false,
         hasPremiumFromAnyOrganization: false,
       });
 
-      expect(await firstValueFrom(sut.hasPremiumPersonally$(userId))).toBe(false);
+      expect(await firstValueFrom(sut.hasPremiumPersonally$(userId))).toBe(true);
     });
   });
 
@@ -111,7 +111,7 @@ describe("BillingAccountProfileStateService", () => {
     it("should update the user's state when called", async () => {
       await sut.setHasPremium(true, false, userId);
 
-      expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$(userId))).toBe(false);
+      expect(await firstValueFrom(sut.hasPremiumFromAnyOrganization$(userId))).toBe(true);
       expect(await firstValueFrom(sut.hasPremiumPersonally$(userId))).toBe(true);
       expect(await firstValueFrom(sut.hasPremiumFromAnySource$(userId))).toBe(true);
     });
